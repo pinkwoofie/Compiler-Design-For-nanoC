@@ -1,0 +1,19 @@
+a.out: y.tab.o lex.yy.o A4_61.o 
+	gcc A4_61.o lex.yy.o y.tab.o -lfl
+	./a.out < A4_61.nc >output.txt
+lex.yy.c: A4_61.l y.tab.h
+	flex A4_61.l
+y.tab.c: A4_61.y
+	bison -dtyv A4_61.y
+A4_61.o: A4_61.c y.tab.h
+	gcc -c A4_61.c
+y.tab.h: A4_61.y
+	bison -dtyv A4_61.y
+lex.yy.o: lex.yy.c
+	gcc -c lex.yy.c
+y.tab.o:    y.tab.c y.tab.h
+	gcc -c y.tab.c
+clean:
+	rm a.out lex.yy.o A4_61.o lex.yy.c y.tab.c y.tab.h y.tab.o output.txt y.output
+run:
+	./a.out < A4_61.nc >output.txt

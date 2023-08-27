@@ -1,0 +1,6 @@
+How to execute :
+    just run make after changing the directory to A4_61
+
+What will be generated as output:
+    In terminal : debug trace will be printed
+    

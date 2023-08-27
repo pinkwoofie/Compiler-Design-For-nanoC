@@ -1,0 +1,68 @@
+tinyC: lex.yy.o A6_1.tab.o A6_1_translator.o A6_1_target_translator.o
+	g++ lex.yy.o A6_1.tab.o A6_1_translator.o A6_1_target_translator.o -lfl -o tinyC
+
+A6_1_target_translator.o: A6_1_target_translator.cxx
+	g++ -c A6_1_target_translator.cxx
+
+A6_1_translator.o: A6_1_translator.h A6_1_translator.cxx
+	g++ -c A6_1_translator.h
+	g++ -c A6_1_translator.cxx
+
+lex.yy.o: lex.yy.c
+	g++ -c lex.yy.c
+
+A6_1.tab.o: A6_1.tab.c
+	g++ -c A6_1.tab.c
+
+lex.yy.c: A6_1.l A6_1.tab.h A6_1_translator.h
+	flex A6_1.l
+
+A6_1.tab.c: A6_1.y
+	bison -dtv A6_1.y
+
+A6_1.tab.h: A6_1.y
+	bison -dtv A6_1.y
+
+libA6_1.a: A6_1.o
+	ar -rcs libA6_1.a A6_1.o
+
+A6_1.o: A6_1.c myl.h
+	gcc -c A6_1.c
+
+A6_1.c:
+	touch A6_1.c
+
+test: tinyC libA6_1.a
+	@mkdir -p test-outputs
+	@mkdir -p bin
+
+	@echo "\nRunning Test 1\n"
+	./tinyC 1 < test-inputs/A6_1_test1.c > test-outputs/A6_1_quads1.out
+	mv A6_1_1.s test-outputs/A6_1_1.s
+	gcc -c test-outputs/A6_1_1.s -o test-outputs/A6_1_1.o
+	gcc -z noexecstack test-outputs/A6_1_1.o -o test1 -L. -lA6_1 -no-pie
+
+	@echo "\nRunning Test 2\n"
+	./tinyC 2 < test-inputs/A6_1_test2.c > test-outputs/A6_1_quads2.out
+	mv A6_1_2.s test-outputs/A6_1_2.s
+	gcc -c test-outputs/A6_1_2.s -o test-outputs/A6_1_2.o
+	gcc -z noexecstack test-outputs/A6_1_2.o -o test2 -L. -lA6_1 -no-pie
+
+	@echo "\nRunning Test 3\n"
+	./tinyC 3 < test-inputs/A6_1_test3.c > test-outputs/A6_1_quads3.out
+	mv A6_1_3.s test-outputs/A6_1_3.s
+	gcc -c test-outputs/A6_1_3.s -o test-outputs/A6_1_3.o
+	gcc -z noexecstack test-outputs/A6_1_3.o -o test3 -L. -lA6_1 -no-pie
+
+	@echo "\nRunning Test 4\n"
+	./tinyC 4 < test-inputs/A6_1_test4.c > test-outputs/A6_1_quads4.out
+	mv A6_1_4.s test-outputs/A6_1_4.s
+	gcc -c test-outputs/A6_1_4.s -o test-outputs/A6_1_4.o
+	gcc -z noexecstack test-outputs/A6_1_4.o -o test4 -L. -lA6_1 -no-pie
+
+
+	@echo "\nThe three address quads, assembly files and object files are in test-outputs/\n"
+	@echo "The binaries for the test files are in bin/\n"
+
+clean:
+	rm -f lex.yy.c *.tab.c *.tab.h *.output *.o *.s *.a *.out *.gch tinyC test-outputs/* test1 test2 test3 test4

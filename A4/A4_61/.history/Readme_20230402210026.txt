@@ -1,0 +1,10 @@
+How to execute :
+    just run make after changing the directory to A4_61
+
+What will be generated as output:
+    In terminal : debug trace will be printed
+    In output.txt : productions and corresponding line number will be printed
+
+Assumptions:
+    If integer is to be used after identifier or other integer, space has to be given.
+    for e.g. a
